@@ -1,0 +1,31 @@
+From f5a91c2f48c60bc0b8fc53e915b66603bfff4dd3 Mon Sep 17 00:00:00 2001
+From: Jasper St. Pierre <jstpierre@mecheye.net>
+Date: Fri, 25 May 2012 18:31:37 +0000
+Subject: log-manager: Fix annotations on get_filtered_events
+
+Both callbacks needs to be marked allow-none, and filter isn't an
+(async scope), it's an (async call).
+
+https://bugs.freedesktop.org/show_bug.cgi?id=50361
+
+Signed-off-by: Jonny Lamb <jonny.lamb@collabora.co.uk>
+---
+diff --git a/telepathy-logger/log-manager.c b/telepathy-logger/log-manager.c
+index d37ab85..f11a58e 100644
+--- a/telepathy-logger/log-manager.c
++++ b/telepathy-logger/log-manager.c
+@@ -1106,9 +1106,10 @@ _get_filtered_events_async_thread (GSimpleAsyncResult *simple,
+  * @target: a non-NULL #TplEntity
+  * @type_mask: event type filter see #TplEventTypeMask
+  * @num_events: number of maximum events to fetch
+- * @filter: (scope async): an optional filter function
++ * @filter: (scope call) (allow-none): an optional filter function
+  * @filter_user_data: user data to pass to @filter
+- * @callback: (scope async): a callback to call when the request is satisfied
++ * @callback: (scope async) (allow-none): a callback to call when
++ * the request is satisfied
+  * @user_data: data to pass to @callback
+  *
+  * Retrieve the most recent @num_event events exchanged with @target.
+--
+cgit v0.9.0.2-2-gbebe
